@@ -34,10 +34,9 @@ server.get("/", (req, res) => {
       res.status(200).json(user);
     })
     .catch(error => {
-      res.status(500).json({
-        message: "The users information could not be retrieved.",
-        error: error
-      });
+      res
+        .status(500)
+        .json({ message: "The users information could not be retrieved." });
     });
 });
 
@@ -60,6 +59,25 @@ server.get("/", (req, res) => {
         .status(500)
         .json({ message: "The user information could not be retrieved." });
     });
+});
+
+server.post("/", (req, res) => {
+  const user = req.body; // not sure
+
+  if (!user.name) {
+    res.status(400).json({ message: "Provide a name for the new user." });
+  } else {
+    userDb
+      .insert(user)
+      .then(user => {
+        res.status(201).json(user);
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "There was an error while adding the user to the database."
+        });
+      });
+  }
 });
 
 module.exports = server;
