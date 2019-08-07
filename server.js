@@ -1,4 +1,6 @@
 const express = require("express");
+const postDb = require("./posts/postDb");
+const userDb = require("./users/userDb");
 
 const server = express();
 
@@ -24,5 +26,40 @@ function validateUserId(req, res, next) {}
 function validateUser(req, res, next) {}
 
 function validatePost(req, res, next) {}
+
+server.get("/", (req, res) => {
+  userDb
+    .get()
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "The users information could not be retrieved.",
+        error: error
+      });
+    });
+});
+
+server.get("/", (req, res) => {
+  const { id } = req.params;
+
+  userDb
+    .getById(id)
+    .then(user => {
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: "The user information could not be retrieved." });
+    });
+});
 
 module.exports = server;
