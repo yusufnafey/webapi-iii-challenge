@@ -99,4 +99,30 @@ server.delete("/:id", (req, res) => {
     });
 });
 
+server.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const user = req.body;
+
+  if (!user.name) {
+    res.status(400).json({ message: "Provide a name for the new user." });
+  } else {
+    userDb
+      .update(id, user)
+      .then(user => {
+        if (user) {
+          res.status(200).json(user);
+        } else {
+          res.status(404).json({
+            message: "The user with the specified ID does not exist."
+          });
+        }
+      })
+      .catch(error => {
+        res
+          .status(500)
+          .json({ message: "The user information could not be modified." });
+      });
+  }
+});
+
 module.exports = server;
