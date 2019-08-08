@@ -19,11 +19,22 @@ function logger(req, res, next) {
   const method = req.method;
   const url = req.url;
   console.log(`You made a ${method} request to ${url} on ${timestamp}.`);
+  next();
 }
 
-function validateUserId(req, res, next) {}
+function validateUserId(req, res, next) {
+  const id = req.params.id;
+}
 
-function validateUser(req, res, next) {}
+function validateUser(req, res, next) {
+  const body = req.body;
+
+  if (!body) {
+    res.status(400).json({ message: "missing user data" });
+  } else if (!body.name) {
+    res.status(400).json({ message: "missing required name field" });
+  }
+}
 
 function validatePost(req, res, next) {}
 
@@ -40,7 +51,7 @@ server.get("/", (req, res) => {
     });
 });
 
-server.get("/", (req, res) => {
+server.get("/:id", (req, res) => {
   const { id } = req.params;
 
   userDb
@@ -62,9 +73,9 @@ server.get("/", (req, res) => {
 });
 
 server.post("/", (req, res) => {
-  const user = req.body; // not sure
+  const { name } = req.body; // not sure
 
-  if (!user.name) {
+  if (!name) {
     res.status(400).json({ message: "Provide a name for the new user." });
   } else {
     userDb
