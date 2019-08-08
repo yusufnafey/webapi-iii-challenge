@@ -36,7 +36,15 @@ function validateUser(req, res, next) {
   }
 }
 
-function validatePost(req, res, next) {}
+function validatePost(req, res, next) {
+  const body = req.body;
+
+  if (!body) {
+    res.status(400).json({ message: "missing post data" });
+  } else if (!body.text) {
+    res.status(400).json({ message: "missing required text field" });
+  }
+}
 
 server.get("/", (req, res) => {
   userDb
